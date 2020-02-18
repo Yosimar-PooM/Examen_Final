@@ -44,6 +44,7 @@ public class InformacionPais extends AppCompatActivity implements Asynchtask {
     private String este;
 
     private GoogleMap mapa;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +53,7 @@ public class InformacionPais extends AppCompatActivity implements Asynchtask {
         imgbandera = findViewById(R.id.imgbandera);
         txtpais = findViewById(R.id.txtpais);
         Bundle bundle = this.getIntent().getExtras();
-        nombreBan=bundle.getString("Name");
+        nombreBan = bundle.getString("Name");
         Map<String, String> datos = new HashMap<String, String>();
         WebService ws = new WebService("http://www.geognos.com/api/en/countries/info/all.json", datos, InformacionPais.this, InformacionPais.this);
         ws.execute("");
@@ -64,36 +65,35 @@ public class InformacionPais extends AppCompatActivity implements Asynchtask {
         JSONObject jsonObject = new JSONObject(result);
         JSONObject jsonResults = jsonObject.getJSONObject("Results");
         Iterator<?> iteracion = jsonResults.keys();
-        while (iteracion.hasNext()){
-            String clave =(String)iteracion.next();
+        while (iteracion.hasNext()) {
+            String clave = (String) iteracion.next();
             JSONObject paise = jsonResults.getJSONObject(clave);
-            Paises pais= new Paises();
-            if (paise.getString("Name").equals(nombreBan)){
-        txtpais.setText(paise.getString("Name"));
-        JSONObject jsonCapital = paise.getJSONObject("Capital");
-        txtcapital.setText(jsonCapital.getString("Name"));
-        JSONObject jsonRectangulo = paise.getJSONObject("GeoRectangle");
-        norte = jsonRectangulo.getString("North");
-        sur = jsonRectangulo.getString("South");
-        este = jsonRectangulo.getString("East");
-        oeste = jsonRectangulo.getString("West");
-        JSONArray jsonGeoPt = paise.getJSONArray("GeoPt");
-        latitud = jsonGeoPt.getDouble(0);
-        longitud = jsonGeoPt.getDouble(1);
-        JSONObject jsonCiudades = paise.getJSONObject("CountryCodes");
+            Paises pais = new Paises();
+            if (paise.getString("Name").equals(nombreBan)) {
+                txtpais.setText(paise.getString("Name"));
+                JSONObject jsonCapital = paise.getJSONObject("Capital");
+                txtcapital.setText(jsonCapital.getString("Name"));
+                JSONObject jsonRectangulo = paise.getJSONObject("GeoRectangle");
+                norte = jsonRectangulo.getString("North");
+                sur = jsonRectangulo.getString("South");
+                este = jsonRectangulo.getString("East");
+                oeste = jsonRectangulo.getString("West");
+                JSONArray jsonGeoPt = paise.getJSONArray("GeoPt");
+                latitud = jsonGeoPt.getDouble(0);
+                longitud = jsonGeoPt.getDouble(1);
+                JSONObject jsonCiudades = paise.getJSONObject("CountryCodes");
 
-        Glide.with(this).load("http://www.geognos.com/api/en/countries/flag/"+jsonCiudades.getString("iso2")+".png").into(imgbandera);
-         ObtenerMapa();
-            }
-            else{
+                Glide.with(this).load("http://www.geognos.com/api/en/countries/flag/" + jsonCiudades.getString("iso2") + ".png").into(imgbandera);
+                ObtenerMapa();
+            } else {
                 //Toast.makeText(this.getApplicationContext(),"No Existe Ese nombre",Toast.LENGTH_LONG).show();
             }
 
         }
     }
 
-    public void ObtenerMapa(){
-        SupportMapFragment fragment = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.mapa);
+    public void ObtenerMapa() {
+        SupportMapFragment fragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapa);
         fragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
@@ -104,12 +104,13 @@ public class InformacionPais extends AppCompatActivity implements Asynchtask {
             }
         });
     }
-    public void DiseñoMarco(){
-        LatLng p1= new LatLng(Double.parseDouble(norte),Double.parseDouble(oeste));
-        LatLng p2= new LatLng(Double.parseDouble(norte),Double.parseDouble(este));
-        LatLng p3= new LatLng(Double.parseDouble(sur),Double.parseDouble(este));
-        LatLng p4= new LatLng(Double.parseDouble(sur),Double.parseDouble(oeste));
-        LatLng p5= new LatLng(Double.parseDouble(norte),Double.parseDouble(oeste));
+
+    public void DiseñoMarco() {
+        LatLng p1 = new LatLng(Double.parseDouble(norte), Double.parseDouble(oeste));
+        LatLng p2 = new LatLng(Double.parseDouble(norte), Double.parseDouble(este));
+        LatLng p3 = new LatLng(Double.parseDouble(sur), Double.parseDouble(este));
+        LatLng p4 = new LatLng(Double.parseDouble(sur), Double.parseDouble(oeste));
+        LatLng p5 = new LatLng(Double.parseDouble(norte), Double.parseDouble(oeste));
         Polygon marco = mapa.addPolygon(new PolygonOptions()
                 .add(p1, p2, p3, p4, p5)
                 .strokeColor(Color.parseColor("#7B1FA2"))
